@@ -47,14 +47,22 @@ Route::group(['middleware' => 'auth'], function () {
 
 			// Create a new customer
 			Route::get('/customers/create', [CustomerController::class, 'create'])->name('customer.create');
-			Route::post('/customers', [CustomerController::class, 'store']);
+			Route::post('/customers', [CustomerController::class, 'store'])->name('customers.index');
+			Route::get('/customers/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
+			Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
+
+			Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
 
 			// Routes for Invoices
 Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('invoice.create');
 Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoice.store');
 Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoice.index');
+Route::get('/invoice/edit/{id}',  [InvoiceController::class, 'edit'])->name('invoice.edit');
+Route::get('/invoice/download-pdf/{id}', [InvoiceController::class, 'downloadPDF'])->name('invoice.download');
+Route::delete('/invoice/destroy/{id}', 'InvoiceController@destroy')->name('invoice.destroy');
+Route::put('/invoice/update/{id}',  [InvoiceController::class, 'update'])->name('invoice.update');
+Route::post('/invoices/{invoice}/record-payment', [InvoiceController::class, 'recordPayment'])->name('invoice.recordPayment');
 
-Route::get('/invoice-history', [InvoiceHistoryController::class, 'index'])->name('invoice.history');
 
 // Routes for Quotations
 Route::get('/quotations/create', [QuoteController::class, 'create'])->name('quote.create');

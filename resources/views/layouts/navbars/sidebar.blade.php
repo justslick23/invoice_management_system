@@ -11,7 +11,7 @@
         </a>
     </li>
     <li>
-        <a data-toggle="collapse" href="#laravel-invoices" aria-expanded="true">
+        <a data-toggle="collapse" href="#laravel-invoices" aria-expanded="false">
             <i class="fab fa-laravel"></i>
             <span class="nav-link-text">{{ __('Invoices') }}</span>
             <b class="caret mt-1"></b>
@@ -25,7 +25,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('user.index') }}">
+                    <a href="{{ route('invoice.index') }}">
                         <i class="tim-icons icon-bullet-list-67"></i>
                         <p>{{ __('Invoice History') }}</p>
                     </a>
@@ -34,7 +34,7 @@
         </div>
     </li>
     <li>
-        <a data-toggle="collapse" href="#laravel-quotations" aria-expanded="true">
+        <a data-toggle="collapse" href="#laravel-quotations" aria-expanded="false">
             <i class="fab fa-laravel"></i>
             <span class="nav-link-text">{{ __('Quotations') }}</span>
             <b class="caret mt-1"></b>
@@ -57,7 +57,7 @@
         </div>
     </li>
     <li>
-        <a data-toggle="collapse" href="#laravel-customers" aria-expanded="true">
+        <a data-toggle="collapse" href="#laravel-customers" aria-expanded="false">
             <i class="fab fa-laravel"></i>
             <span class="nav-link-text">{{ __('Customers') }}</span>
             <b class="caret mt-1"></b>
@@ -80,7 +80,7 @@
         </div>
     </li>
     <li>
-        <a data-toggle="collapse" href="#laravel-products" aria-expanded="true">
+        <a data-toggle="collapse" href="#laravel-products" aria-expanded="false">
             <i class="fab fa-laravel"></i>
             <span class="nav-link-text">{{ __('Products') }}</span>
             <b class="caret mt-1"></b>

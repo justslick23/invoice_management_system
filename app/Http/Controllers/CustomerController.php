@@ -35,4 +35,29 @@ public function store(Request $request)
     return redirect('/customers')->with('success', 'Customer created successfully.');
 }
 
+public function edit($id)
+{
+    $customer = Customer::find($id);
+    return view('customers.edit', compact('customer'));
+}
+
+public function update(Request $request, $id)
+{
+    $customer = Customer::find($id);
+    $customer->update($request->all());
+
+    return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
+}
+
+public function destroy($id)
+{
+    $customer = Customer::find($id);
+    $customer->delete();
+
+    return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
+}
+
+
+
+
 }
