@@ -1,114 +1,137 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <title>Invoice</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="{{ public_path('fonts/KumbhSans-Regular.ttf') }}" rel="stylesheet">
+
     <style>
-        body {
-            font-family: 'Inter', sans-serif !important;
-            background-color: #f4f4f4;
+  
+
+        * {
+            font-family: 'Kumbh Sans', sans-serif !important;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Kumbh Sans', sans-serif !important;
+
             color: #333;
         }
-        .invoice {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
+
+        .container {
             padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .invoice-header {
-            text-align: center;
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 0;
+
+        .logo img {
+            max-width: 100%;
         }
-        .invoice-header h1 {
-            font-size: 24px;
-        }
-        .invoice-details {
-            margin-top: 20px;
-        }
-        .invoice-details table {
+
+        table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 20px;
         }
-        .invoice-details th, .invoice-details td {
-            border: 1px solid #ccc;
-            padding: 8px;
-        }
-        .invoice-details th {
-            background-color: #f0f0f0;
-            font-weight: bold;
+
+        th, td {
+            padding: 10px;
             text-align: left;
         }
-        .invoice-details td {
-            text-align: right;
+
+        th {
+            background-color: #f2f2f2;
         }
-        .customer-details {
-            margin-top: 20px;
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
-        .customer-details h2 {
-            font-size: 18px;
+
+        .invoice-table {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .customer-details p {
-            margin: 5px 0;
+
+        .invoice-table th, .invoice-table td {
+            padding: 15px;
+            text-align: left;
         }
-        .invoice-footer {
-            margin-top: 20px;
-            text-align: center;
+
+        .invoice-table th {
+            background-color: #4CAF50;
+            color: white;
         }
-        .invoice-footer p {
-            font-weight: bold;
+
+        .invoice-table tbody td {
+            background-color: white;
+        }
+
+        .invoice-table tr:nth-child(even) {
+            background-color: #f2f2f2;
         }
     </style>
+    <title>Invoice</title>
 </head>
 <body>
-    <div class="invoice">
-        <div class="invoice-header">
-            <h1>Invoice</h1>
-        </div>
-        <div class="customer-details">
-            <h2>Customer Information:</h2>
-            <p><strong>Customer Name:</strong> {{ $invoice->customer->name }}</p>
-            <p><strong>Customer Email:</strong> {{ $invoice->customer->email }}</p>
-            <p><strong>Customer Address:</strong> {{ $invoice->customer->address }}</p>
-            <!-- Add more customer details as needed -->
-        </div>
-        <div class="invoice-details">
-            <table>
-                <thead>
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="2">
+                        <div class="logo">
+                            <img src="{{ public_path('black/img/slicktech.png') }}" width="250" alt="Logo">
+                        </div>
+                    </th>
+                    <th colspan="2">
+                        <h1 style="font-size: 2.3em; text-align: right;"><strong>INVOICE</strong></h1>
+                        <h4 style="text-align: right;">{{ $invoice->created_at->format('d F Y') }}</h4>
+                    </th>
+                </tr>
+            </thead>
+            <br>
+            <br>
+            <tbody>
+                <tr>
+                    <td colspan="2">
+                        <span><strong>Office Address</strong></span>
+                        <p>Ha Matala Phase 2</p>
+                        <p>Maseru, Lesotho</p>  
+                        <p>(+266) 6823 1628</p>  
+                    </td>
+                    <td colspan="2" >
+                        <span><strong>Bill To:</strong></span>
+                        <p>{{$invoice->customer->name}}</p>
+                        <p>{{$invoice->customer->contact_person}}</p>
+                        <p>{{$invoice->customer->address}}</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br><br>
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th>Items Description</th>
+                    <th>Unit Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($invoice->items as $item)
+                    @php 
+                        $subtotalProducts = $item->quantity * $item->product->price;
+                    @endphp
                     <tr>
-                        <th>Item</th>
-                        <th>Description</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Subtotal</th>
+                        <td>{{$item->product->name}}</td> 
+                        <td>{{$item->product->price}}</td> 
+                        <td>{{$item->quantity}}</td> 
+                        <td>M{{number_format($subtotalProducts, 2)}}</td> 
                     </tr>
-                </thead>
-                <tbody>
-                    <!-- Loop through invoice items and populate the table -->
-                    @foreach($invoice->items as $item)
-                    <tr>
-                        <td>{{ $item->product->name }}</td>
-                        <td>{{ $item->description }}</td>
-                        <td>{{ $item->quantity }}</td>
-                        <td>M{{ number_format($item->product->price, 2) }}</td>
-                        <td>M{{ number_format($item->quantity * $item->product->price, 2) }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        <div class="invoice-footer">
-            <p>Total Amount: ${{ number_format($invoice->total, 2) }}</p>
-        </div>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </body>
 </html>

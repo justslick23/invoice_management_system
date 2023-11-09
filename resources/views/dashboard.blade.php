@@ -2,380 +2,305 @@
 
 @section('content')
     <div class="row">
-        <div class="col-12">
-            <div class="card card-chart">
+    <div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
                 <div class="card-header ">
-                    <div class="row">
-                        <div class="col-sm-6 text-left">
-                            <h5 class="card-category">Total Shipments</h5>
-                            <h2 class="card-title">Performance</h2>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-                            <label class="btn btn-sm btn-primary btn-simple active" id="0">
+                    <h4>Total Invoices</h4>
+                </div>
+                <div class="card-body">
+                    <h2><strong>{{$numOfInvoices}}</strong></h2>
+                    <div class="icon-container">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header ">
+                    <h4>Total Paid Invoices</h4>
+                </div>
+                <div class="card-body">
+                    <h2><strong>{{$numPaidInvoices}}</strong></h2>
+                    <div class="icon-container">
+                        <i class="fas fa-money-check-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header ">
+                    <h4>Total Quotes</h4>
+                </div>
+                <div class="card-body">
+                    <h2><strong>{{$numOfQuotes}}</strong></h2>
+                    <div class="icon-container">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header ">
+                    <h4>Total Paid Amount</h4>
+                </div>
+                <div class="card-body">
+                    <h2><strong>M{{number_format($totalSumPaidInvoices,2)}}</strong></h2>
+                    <div class="icon-container">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .card-body {
+        position: relative;
+    }
+
+    
+    .icon-container {
+        position: absolute;
+        top: 50%;
+        right: 10px; /* Adjust the right distance as needed */
+        transform: translateY(-50%);
+        background-color: #fff; /* Background color for the circular container */
+        border-radius: 50%; /* Make it circular */
+        padding: 5px; /* Adjust padding as needed */
+    }
+
+    .icon-container i {
+        font-size: 24px; /* Adjust the icon size as needed */
+        color: #333; /* Adjust the icon color as needed */
+    }
+</style>
+
+    <div class="col-lg-12">
+        <div class="card card-chart">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-6 text-left">
+                        <h5 class="card-category"></h5>
+                        <h2 class="card-title">Dashboard</h2>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-primary btn-sm active" onclick="updateChart('weekly')">
                                 <input type="radio" name="options" checked>
-                                <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Accounts</span>
-                                <span class="d-block d-sm-none">
-                                    <i class="tim-icons icon-single-02"></i>
-                                </span>
+                                <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Weekly</span>
                             </label>
-                            <label class="btn btn-sm btn-primary btn-simple" id="1">
-                                <input type="radio" class="d-none d-sm-none" name="options">
-                                <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Purchases</span>
-                                <span class="d-block d-sm-none">
-                                    <i class="tim-icons icon-gift-2"></i>
-                                </span>
+                            <label class="btn btn-primary btn-sm" onclick="updateChart('monthly')">
+                                <input type="radio" name="options">
+                                <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Monthly</span>
                             </label>
-                            <label class="btn btn-sm btn-primary btn-simple" id="2">
-                                <input type="radio" class="d-none" name="options">
-                                <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Sessions</span>
-                                <span class="d-block d-sm-none">
-                                    <i class="tim-icons icon-tap-02"></i>
-                                </span>
+                            <label class="btn btn-primary btn-sm" onclick="updateChart('quarterly')">
+                                <input type="radio" name="options">
+                                <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Quarterly</span>
                             </label>
-                            </div>
+                            <label class="btn btn-primary btn-sm" onclick="updateChart('yearly')">
+                                <input type="radio" name="options">
+                                <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Yearly</span>
+                            </label>
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="chartBig1"></canvas>
-                    </div>
-                </div>
+            </div>
+            <div class="card-body">
+                <canvas id="invoicesChart" width="400" height="150"></canvas>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-4">
-            <div class="card card-chart">
-                <div class="card-header">
-                    <h5 class="card-category">Total Shipments</h5>
-                    <h3 class="card-title"><i class="tim-icons icon-bell-55 text-primary"></i> 763,215</h3>
-                </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="chartLinePurple"></canvas>
+
+    <div class="col-lg-12">
+        <div class="card card-chart">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-6 text-left">
+                        <h5 class="card-category"></h5>
+                        <h2 class="card-title">Cash Flow</h2>
                     </div>
+
+                   
                 </div>
             </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="card card-chart">
-                <div class="card-header">
-                    <h5 class="card-category">Daily Sales</h5>
-                    <h3 class="card-title"><i class="tim-icons icon-delivery-fast text-info"></i> 3,500€</h3>
-                </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="CountryChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="card card-chart">
-                <div class="card-header">
-                    <h5 class="card-category">Completed Tasks</h5>
-                    <h3 class="card-title"><i class="tim-icons icon-send text-success"></i> 12,100K</h3>
-                </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="chartLineGreen"></canvas>
-                    </div>
-                </div>
+            <div class="card-body">
+                <canvas id="monthlyChart" width="400" height="150"></canvas>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-6 col-md-12">
-            <div class="card card-tasks">
-                <div class="card-header ">
-                    <h6 class="title d-inline">Tasks(5)</h6>
-                    <p class="card-category d-inline">today</p>
-                    <div class="dropdown">
-                        <button type="button" class="btn btn-link dropdown-toggle btn-icon" data-toggle="dropdown">
-                            <i class="tim-icons icon-settings-gear-63"></i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="#pablo">Action</a>
-                            <a class="dropdown-item" href="#pablo">Another action</a>
-                            <a class="dropdown-item" href="#pablo">Something else</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body ">
-                    <div class="table-full-width table-responsive">
-                        <table class="table">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="checkbox" value="">
-                                                <span class="form-check-sign">
-                                                    <span class="check"></span>
-                                                </span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="title">Update the Documentation</p>
-                                        <p class="text-muted">Dwuamish Head, Seattle, WA 8:47 AM</p>
-                                    </td>
-                                    <td class="td-actions text-right">
-                                        <button type="button" rel="tooltip" title="" class="btn btn-link" data-original-title="Edit Task">
-                                            <i class="tim-icons icon-pencil"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="checkbox" value="" checked="">
-                                                <span class="form-check-sign">
-                                                    <span class="check"></span>
-                                                </span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="title">GDPR Compliance</p>
-                                        <p class="text-muted">The GDPR is a regulation that requires businesses to protect the personal data and privacy of Europe citizens for transactions that occur within EU member states.</p>
-                                    </td>
-                                    <td class="td-actions text-right">
-                                        <button type="button" rel="tooltip" title="" class="btn btn-link" data-original-title="Edit Task">
-                                            <i class="tim-icons icon-pencil"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="checkbox" value="">
-                                                    <span class="form-check-sign">
-                                                        <span class="check"></span>
-                                                    </span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="title">Solve the issues</p>
-                                        <p class="text-muted">Fifty percent of all respondents said they would be more likely to shop at a company </p>
-                                    </td>
-                                    <td class="td-actions text-right">
-                                        <button type="button" rel="tooltip" title="" class="btn btn-link" data-original-title="Edit Task">
-                                            <i class="tim-icons icon-pencil"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="checkbox" value="">
-                                                <span class="form-check-sign">
-                                                    <span class="check"></span>
-                                                </span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="title">Release v2.0.0</p>
-                                        <p class="text-muted">Ra Ave SW, Seattle, WA 98116, SUA 11:19 AM</p>
-                                    </td>
-                                    <td class="td-actions text-right">
-                                        <button type="button" rel="tooltip" title="" class="btn btn-link" data-original-title="Edit Task">
-                                            <i class="tim-icons icon-pencil"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="checkbox" value="">
-                                                <span class="form-check-sign">
-                                                    <span class="check"></span>
-                                                </span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="title">Export the processed files</p>
-                                        <p class="text-muted">The report also shows that consumers will not easily forgive a company once a breach exposing their personal data occurs. </p>
-                                    </td>
-                                    <td class="td-actions text-right">
-                                        <button type="button" rel="tooltip" title="" class="btn btn-link" data-original-title="Edit Task">
-                                            <i class="tim-icons icon-pencil"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="checkbox" value="">
-                                                <span class="form-check-sign">
-                                                    <span class="check"></span>
-                                                </span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="title">Arival at export process</p>
-                                        <p class="text-muted">Capitol Hill, Seattle, WA 12:34 AM</p>
-                                    </td>
-                                    <td class="td-actions text-right">
-                                        <button type="button" rel="tooltip" title="" class="btn btn-link" data-original-title="Edit Task">
-                                            <i class="tim-icons icon-pencil"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6 col-md-12">
-            <div class="card ">
-                <div class="card-header">
-                    <h4 class="card-title">Simple Table</h4>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table tablesorter" id="">
-                            <thead class=" text-primary">
-                                <tr>
-                                    <th>
-                                        Name
-                                    </th>
-                                    <th>
-                                        Country
-                                    </th>
-                                    <th>
-                                        City
-                                    </th>
-                                    <th class="text-center">
-                                        Salary
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                      Dakota Rice
-                                    </td>
-                                    <td>
-                                      Niger
-                                    </td>
-                                    <td>
-                                      Oud-Turnhout
-                                    </td>
-                                    <td class="text-center">
-                                      $36,738
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Minerva Hooper
-                                    </td>
-                                    <td>
-                                        Curaçao
-                                    </td>
-                                    <td>
-                                        Sinaai-Waas
-                                    </td>
-                                    <td class="text-center">
-                                        $23,789
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Sage Rodriguez
-                                    </td>
-                                    <td>
-                                        Netherlands
-                                    </td>
-                                    <td>
-                                        Baileux
-                                    </td>
-                                    <td class="text-center">
-                                        $56,142
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Philip Chaney
-                                    </td>
-                                    <td>
-                                        Korea, South
-                                    </td>
-                                    <td>
-                                        Overland Park
-                                    </td>
-                                    <td class="text-center">
-                                        $38,735
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Doris Greene
-                                    </td>
-                                    <td>
-                                        Malawi
-                                    </td>
-                                    <td>
-                                        Feldkirchen in Kärnten
-                                    </td>
-                                    <td class="text-center">
-                                        $63,542
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Mason Porter
-                                    </td>
-                                    <td>
-                                        Chile
-                                    </td>
-                                    <td>
-                                        Gloucester
-                                    </td>
-                                    <td class="text-center">
-                                        $78,615
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Jon Porter
-                                    </td>
-                                    <td>
-                                        Portugal
-                                    </td>
-                                    <td>
-                                        Gloucester
-                                    </td>
-                                    <td class="text-center">
-                                        $98,615
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
+      
 @endsection
 
 @push('js')
-    <script src="{{ asset('black') }}/js/plugins/chartjs.min.js"></script>
-    <script>
-        $(document).ready(function() {
-          demo.initDashboardPageCharts();
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="{{ asset('black') }}/js/plugins/chartjs.min.js"></script>
+
+<script>
+    // Your existing data initialization
+    var invoicesChartData = @json($invoicesChartData);
+    var quoteChartData = @json($quotesChartData);
+
+    // Define the date range based on the selected filter
+    function getDateRange(filter) {
+        var endDate = moment();
+        var startDate;
+
+        switch (filter) {
+            case 'weekly':
+                startDate = moment(endDate).subtract(7, 'days');
+                break;
+            case 'monthly':
+                startDate = moment(endDate).subtract(1, 'months');
+                break;
+            case 'quarterly':
+                startDate = moment(endDate).subtract(3, 'months');
+                break;
+            case 'yearly':
+                startDate = moment(endDate).subtract(1, 'years');
+                break;
+            default:
+                startDate = moment(endDate).subtract(7, 'days');
+        }
+
+        var dateRange = [];
+        var currentDate = moment(startDate);
+
+        while (currentDate.isSameOrBefore(endDate)) {
+            dateRange.push(currentDate.format('YYYY-MM-DD')); // Use the same format as your datasets
+            currentDate.add(1, 'day');
+        }
+
+        return dateRange;
+    }
+
+    // Update the chart based on the selected filter
+    function updateChart(filter) {
+        var dateRange = getDateRange(filter);
+
+        // Filter the data based on the selected date range
+        var filteredInvoices = invoicesChartData.filter(data => dateRange.includes(moment(data.date).format('YYYY-MM-DD')));
+        var filteredQuotes = quoteChartData.filter(data => dateRange.includes(moment(data.date).format('YYYY-MM-DD')));
+
+        // Map the counts to the corresponding dates in the range
+        var invoiceCounts = dateRange.map(date => {
+            var matchingData = filteredInvoices.find(data => moment(data.date).format('YYYY-MM-DD') === date);
+            return matchingData ? matchingData.count : 0;
+        });
+
+        var quoteCounts = dateRange.map(date => {
+            var matchingData = filteredQuotes.find(data => moment(data.date).format('YYYY-MM-DD') === date);
+            return matchingData ? matchingData.count : 0;
+        });
+
+        // Update the chart with the filtered and mapped data
+        myChart.data.labels = dateRange;
+        myChart.data.datasets[0].data = invoiceCounts;
+        myChart.data.datasets[1].data = quoteCounts;
+        myChart.update();
+    }
+
+    // Your existing chart initialization
+    var ctx = document.getElementById('invoicesChart').getContext('2d');
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [
+                {
+                    label: 'Invoice Count',
+                    data: [],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    fill: false,
+                },
+                {
+                    label: 'Quote Count',
+                    data: [],
+                    borderColor: 'rgba(75, 192, 100, 1)',
+                    borderWidth: 1,
+                    fill: false,
+                },
+            ],
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        parser: 'YYYY-MM-DD',
+                        tooltipFormat: 'YYYY-MM-DD',
+                        unit: 'day',
+                        displayFormats: {
+                            day: 'MMM D',
+                        },
+                    },
+                    title: {
+                        display: true,
+                        text: 'Date',
+                    },
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Count',
+                    },
+                },
+            },
+        },
+    });
+
+    // Initialize the chart with the default filter
+    updateChart('weekly');
+</script>
+
+
+<script>
+        var mergedData = @json($result);
+
+        // Get the canvas element
+        var ctx = document.getElementById('monthlyChart').getContext('2d');
+
+        // Create a bar chart
+        var flowChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: mergedData.map(data => data.month),
+                datasets: [{
+                    label: 'Total Amount',
+                    data: mergedData.map(data => data.total_amount),
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)', // Adjust the color as needed
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Month'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Total Amount'
+                        }
+                    }
+                }
+            }
         });
     </script>
+
+
 @endpush

@@ -9,8 +9,7 @@ use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Payment;
 
-use Dompdf\Dompdf;
-use Dompdf\Options; // Import the Options class
+use PDF; // Import the Options class
 
 class InvoiceController extends Controller
 {
@@ -144,18 +143,17 @@ public function downloadPdf($id)
         return redirect()->route('invoices.index')->with('error', 'Invoice not found');
     }
 
-    // Load the view for generating the PDF
-    $view = view('pdf.invoice', compact('invoice'));
+    $data = [
+        'invoice' => $invoice, // Replace with your actual data
+    ];
 
-    // Create PDF with Dompdf
-   
-    $dompdf = new Dompdf();
-    $dompdf->loadHtml($view);
-    $dompdf->setPaper('A4', 'portrait');
-    $dompdf->render();
+    $pdf = PDF::loadView('pdf.invoice', $data);
+
+
+    
 
     // Download the PDF file
-    return $dompdf->stream("invoice_{$invoice->invoice_number}.pdf");
+    return $pdf->stream("invoice_{$invoice->invoice_number}.pdf");
 }
 
 
