@@ -167,6 +167,22 @@ public function recordPayment(Request $request, Invoice $invoice)
     return redirect()->back()->with('success', 'Payment recorded successfully.');
 }
 
+public function destroy($id)
+{
+    // Find the invoice by its ID
+    $invoice = Invoice::findOrFail($id);
+
+    // Delete related records in the invoice_items table
+    $invoice->items()->delete();
+
+    // Delete the invoice
+    $invoice->delete();
+
+    // Redirect back with a success message
+    return redirect()->back()->with('success', 'Invoice deleted successfully.');
+}
+
+
 public function downloadPdf($id)
 {
     $invoice = Invoice::find($id);
