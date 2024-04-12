@@ -1,0 +1,12 @@
+{
+    "kumbh sans": {
+        "normal": "C:\\Users\\tokel\\OneDrive\\Documents\\Code\\invoice_management\\storage\\fonts\/kumbh_sans_normal_223b42420e36b33844b1c6ac2577243e",
+        "bold": "kumbh_sans_bold_5938c5d79a4f7e36a2d9f4dd4cfc78d1"
+    },
+    "poppins": {
+        "normal": "C:\\Users\\tokel\\OneDrive\\Documents\\Code\\invoice_management\\storage\\fonts\/poppins_normal_a62832bf75823019dc29c5a9c470d64d",
+        "500": "C:\\Users\\tokel\\OneDrive\\Documents\\Code\\invoice_management\\storage\\fonts\/poppins_500_a885de0ea35a644243715bf64b6d1a65",
+        "600": "C:\\Users\\tokel\\OneDrive\\Documents\\Code\\invoice_management\\storage\\fonts\/poppins_600_ca6698540fb485d7b756c91a54a37d8e",
+        "bold": "poppins_bold_87c49bf24d72f01a4af573680817521f"
+    }
+}

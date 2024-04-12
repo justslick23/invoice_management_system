@@ -22,14 +22,37 @@ class InvoiceController extends Controller
     }
     
     public function create()
-    {    $customers = Customer::all(); // Fetch the list of customers
-        $products = Product::all(); // Fetch the list of customers
-
+    {
+        $customers = Customer::all(); // Fetch the list of customers
+        $products = Product::all(); // Fetch the list of products
+    
         $lastInvoice = Invoice::latest('id')->first();
-        $newInvoiceNumber = $lastInvoice ? 'INV-' . str_pad($lastInvoice->id + 1, 5, '0', STR_PAD_LEFT) : 'INV-00001';
-
+    
+        // Get the current year and month
+        $yearMonth = date('Ym');
+    
+        // If there is no last invoice, set the sequential number to 1
+        $sequentialNumber = 1;
+    
+        if ($lastInvoice) {
+            // Extract the year and month from the last invoice number
+            $lastYearMonth = substr($lastInvoice->invoice_number, 4, 6);
+    
+            if ($lastYearMonth == $yearMonth) {
+                // If the last invoice is from the same month, increment the sequential number
+                $sequentialNumber = intval(substr($lastInvoice->invoice_number, -5)) + 1;
+            }
+        }
+    
+        // Format the sequential number with leading zeros
+        $formattedSequentialNumber = str_pad($sequentialNumber, 4, '0', STR_PAD_LEFT);
+    
+        // Construct the new invoice number
+        $newInvoiceNumber = 'INV-' . $yearMonth . '-' . $formattedSequentialNumber;
+    
         return view('invoices.create', compact('customers', 'products', 'newInvoiceNumber'));
     }
+
     
     public function store(Request $request)
     {
@@ -143,14 +166,15 @@ public function downloadPdf($id)
         return redirect()->route('invoices.index')->with('error', 'Invoice not found');
     }
 
+    // Use the Google Fonts URL for Montserrat as an example
+    $fontUrl = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap';
+
     $data = [
         'invoice' => $invoice, // Replace with your actual data
+        'fontUrl' => $fontUrl,
     ];
 
     $pdf = PDF::loadView('pdf.invoice', $data);
-
-
-    
 
     // Download the PDF file
     return $pdf->stream("invoice_{$invoice->invoice_number}.pdf");

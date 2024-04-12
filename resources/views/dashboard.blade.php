@@ -4,81 +4,71 @@
     <div class="row">
     <div class="container">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="card">
-                <div class="card-header ">
+                <div class="card-header">
                     <h4>Total Invoices</h4>
                 </div>
                 <div class="card-body">
-                    <h2><strong>{{$numOfInvoices}}</strong></h2>
+                    <h2><strong>10</strong></h2>
                     <div class="icon-container">
                         <i class="fas fa-file-invoice-dollar"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="card">
-                <div class="card-header ">
+                <div class="card-header">
                     <h4>Total Paid Invoices</h4>
                 </div>
                 <div class="card-body">
-                    <h2><strong>{{$numPaidInvoices}}</strong></h2>
+                    <h2><strong>5</strong></h2>
                     <div class="icon-container">
                         <i class="fas fa-money-check-alt"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="card">
-                <div class="card-header ">
+                <div class="card-header">
                     <h4>Total Quotes</h4>
                 </div>
                 <div class="card-body">
-                    <h2><strong>{{$numOfQuotes}}</strong></h2>
+                    <h2><strong>20</strong></h2>
                     <div class="icon-container">
                         <i class="fas fa-file-alt"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-header ">
-                    <h4>Total Paid Amount</h4>
-                </div>
-                <div class="card-body">
-                    <h2><strong>M{{number_format($totalSumPaidInvoices,2)}}</strong></h2>
-                    <div class="icon-container">
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
+</div>
 <style>
-    .card-body {
-        position: relative;
-    }
+        body {
+            background-color: #000;
+            color: #fff;
+        }
 
-    
-    .icon-container {
-        position: absolute;
-        top: 50%;
-        right: 10px; /* Adjust the right distance as needed */
-        transform: translateY(-50%);
-        background-color: #fff; /* Background color for the circular container */
-        border-radius: 50%; /* Make it circular */
-        padding: 5px; /* Adjust padding as needed */
-    }
+        .card {
+            background-color: #333;
+            border-color: #222;
+            color: #fff;
+            border-radius: 10px;
+        }
 
-    .icon-container i {
-        font-size: 24px; /* Adjust the icon size as needed */
-        color: #333; /* Adjust the icon color as needed */
-    }
-</style>
+        .card-header {
+            background-color: #222;
+            color: #fff;
+            border-bottom: 1px solid #444;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+    </style>
 
     <div class="col-lg-12">
         <div class="card card-chart">

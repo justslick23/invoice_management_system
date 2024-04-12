@@ -19,12 +19,34 @@ class QuoteController extends Controller
         return view('quote.index', compact('quotes'));
     }
     public function create()
-    {    $customers = Customer::all(); // Fetch the list of customers
-        $products = Product::all(); // Fetch the list of customers
-
+    {
+        $customers = Customer::all(); // Fetch the list of customers
+        $products = Product::all(); // Fetch the list of products
+    
         $lastQuote = Quote::latest('id')->first();
-        $newQuoteNumber = $lastQuote ? 'QUO-' . str_pad($lastQuote->id + 1, 5, '0', STR_PAD_LEFT) : 'QUO-00001';
-
+    
+        // Get the current year and month
+        $yearMonth = date('Ym');
+    
+        // If there is no last quote, set the sequential number to 1
+        $sequentialNumber = 1;
+    
+        if ($lastQuote) {
+            // Extract the year and month from the last quote number
+            $lastYearMonth = substr($lastQuote->quote_number, 4, 6);
+    
+            if ($lastYearMonth == $yearMonth) {
+                // If the last quote is from the same month, increment the sequential number
+                $sequentialNumber = intval(substr($lastQuote->quote_number, -5)) + 1;
+            }
+        }
+    
+        // Format the sequential number with leading zeros
+        $formattedSequentialNumber = str_pad($sequentialNumber, 4, '0', STR_PAD_LEFT);
+    
+        // Construct the new quote number
+        $newQuoteNumber = 'QUO-' . $yearMonth . '-' . $formattedSequentialNumber;
+    
         return view('quote.create', compact('customers', 'products', 'newQuoteNumber'));
     }
 

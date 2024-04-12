@@ -1,137 +1,203 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice V3</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link href="{{ public_path('style.css') }}" rel="stylesheet">
+    <link href="{{ public_path('black/css/black-dashboard.css') }}" rel="stylesheet">
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="{{ public_path('fonts/KumbhSans-Regular.ttf') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Custom Styles for A4 Size -->
     <style>
-  
-
-        * {
-            font-family: 'Kumbh Sans', sans-serif !important;
+        @page {
+            size: A4;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Kumbh Sans', sans-serif !important;
+            padding: 3%;
+            background-image: url('{{ public_path('images/pattern-blur-right.png') }}');
 
-            color: #333;
         }
 
-        .container {
-            padding: 20px;
-        }
+/* Clearfix */
+.invoice-info::after {
+    content: "";
+    display: table;
+    clear: both;
+}
 
-        .logo img {
-            max-width: 100%;
-        }
+.invoice-info {
+    margin-top: 20px;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+.invoice-info .info-block {
+    width: calc(33.33% - 20px); /* Adjust for margin */
+    float: left;
+    margin-right: 10px; /* Equal spacing between columns */
+    box-sizing: border-box; /* Include padding and border in the width */
+}
 
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
+.invoice-info .info-block:last-child {
+    margin-right: 0;
+}
 
-        th {
-            background-color: #f2f2f2;
-        }
 
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .invoice-table {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .invoice-table th, .invoice-table td {
-            padding: 15px;
-            text-align: left;
-        }
-
-        .invoice-table th {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .invoice-table tbody td {
-            background-color: white;
-        }
-
-        .invoice-table tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
     </style>
-    <title>Invoice</title>
 </head>
-<body>
-    <div class="container">
-        <table>
-            <thead>
-                <tr>
-                    <th colspan="2">
-                        <div class="logo">
-                            <img src="{{ public_path('black/img/slicktech.png') }}" width="250" alt="Logo">
-                        </div>
-                    </th>
-                    <th colspan="2">
-                        <h1 style="font-size: 2.3em; text-align: right;"><strong>INVOICE</strong></h1>
-                        <h4 style="text-align: right;">{{ $invoice->created_at->format('d F Y') }}</h4>
-                    </th>
-                </tr>
-            </thead>
-            <br>
-            <br>
-            <tbody>
-                <tr>
-                    <td colspan="2">
-                        <span><strong>Office Address</strong></span>
-                        <p>Ha Matala Phase 2</p>
-                        <p>Maseru, Lesotho</p>  
-                        <p>(+266) 6823 1628</p>  
-                    </td>
-                    <td colspan="2" >
-                        <span><strong>Bill To:</strong></span>
-                        <p>{{$invoice->customer->name}}</p>
-                        <p>{{$invoice->customer->contact_person}}</p>
-                        <p>{{$invoice->customer->address}}</p>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
 
-        <br><br>
-        <table class="invoice-table">
-            <thead>
-                <tr>
-                    <th>Items Description</th>
-                    <th>Unit Price</th>
-                    <th>Quantity</th>
-                    <th>Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($invoice->items as $item)
-                    @php 
-                        $subtotalProducts = $item->quantity * $item->product->price;
-                    @endphp
-                    <tr>
-                        <td>{{$item->product->name}}</td> 
-                        <td>{{$item->product->price}}</td> 
-                        <td>{{$item->quantity}}</td> 
-                        <td>M{{number_format($subtotalProducts, 2)}}</td> 
-                    </tr>
-                @endforeach
-            </tbody>
+<body>
+
+
+    <section id="invoice">
+        <div class="container-fluid my-5 py-5">
+
+        <div class="row pattern d-md-flex justify-content-top  py-5 py-md-3">
+        <div class="d-none d-md-flex pattern-overlay pattern-right" style="background-image: url('images/pattern-blur-right.png');">
+</div>
+
+    <div class="col-md-4">
+        <table style="width: 100%; margin-top: -5rem">
+    
+            <tr>
+            <td style=" padding: 10px; text-align: left;">
+                    <img src="{{ public_path('images/logoo.png') }}" alt="" style="max-width: 15%;">
+                </td>
+            <td style="">
+                    <p class="text-primary fw-bold">Invoice No</p>
+                    <h5>{{ $invoice->invoice_number }}</h5>
+                </td>
+            
+            </tr>
+            <tr>
+                <td><h2><strong>INVOICE</strong></h2></td>
+                <td style=" ;">
+                    <p class="text-primary fw-bold">Invoice Date</p>
+                    <h5>{{ $invoice->invoice_date }}</h5>
+                </td>
+              <!-- Empty cell for logo column -->
+            </tr>
+            <tr>
+                <td></td>
+                <td style="">
+                    <p class="text-primary fw-bold">Due Date</p>
+                    <h5>{{ $invoice->due_date }}</h5>
+                </td>
+                           </tr>
         </table>
     </div>
+</div>
+
+<hr style="border-top: 1px solid white;">
+
+
+
+                <div class="invoice-info">
+    <table style = "width: 100%; table-layout:fixed">
+        <tr>
+            <td style="padding: 10px; width: 33%">
+                <p class="text-primary fw-bold">Invoice To</p>
+                <h4>{{ $invoice->customer->name }}</h4>
+                <ul class="list-unstyled">
+                    <li>{{ $invoice->customer->contact_person }}</li>
+                    <li>{{ $invoice->customer->email }}</li>
+                    <li>{{ $invoice->customer->address }}</li>
+                </ul>
+            </td>
+            <td style="padding: 10px;  width: 33%">
+                <p class="text-primary fw-bold">Invoice From</p>
+                <h4><strong>Graphics by slktstr.</strong></h4>
+                <ul class="list-unstyled">
+                    <li>Tokelo Foso</li>
+                    <li>graphics@tokelofoso.online</li>
+                    <li>Ha Matala Phase 2</li>
+                </ul>
+            </td>
+            <td style="padding: 10px;  width: 33%">
+                <p class="text-primary fw-bold">Contact Us</p>
+                <h4>Contact Info</h4>
+                <ul class="list-unstyled">
+                    <li><iconify-icon class="social-icon text-primary fs-5 me-2" icon="mdi:location"
+                            style="vertical-align:text-bottom"></iconify-icon> Ha Matala Phase 2</li>
+                    <li><iconify-icon class="social-icon text-primary fs-5 me-2" icon="solar:phone-bold"
+                            style="vertical-align:text-bottom"></iconify-icon> (+266) 5676 9106</li>
+                    <li><iconify-icon class="social-icon text-primary fs-5 me-2" icon="ic:baseline-email"
+                            style="vertical-align:text-bottom"></iconify-icon> graphics@tokelofoso.online</li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<hr style="border-top: 1px solid white;">
+
+
+<table class="table table-borderless table-striped my-5">
+    <thead>
+        <tr class="bg-primary">
+            <th scope="col">No.</th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Price</th>
+            <th scope="col">Sub Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @php
+            $total = 0;
+        @endphp
+        @foreach ($invoice->items as $index => $item)
+            <tr>
+                <td class="text-white">{{ $index + 1 }}</td>
+                <td class="text-white">{{ $item->product->name }}</td>
+                <td class="text-white">{{ $item->product->description }}</td>
+                <td class="text-white">{{ $item->quantity }}</td>
+                <td class="text-white">{{ number_format($item->product->price, 2) }}</td>
+                <td class="text-white">{{ number_format($item->product->price * $item->quantity, 2) }}</td>
+            </tr>
+            @php
+                $total += $item->product->price * $item->quantity;
+            @endphp
+        @endforeach
+        <tr>
+            <td class="text-white"></td>
+            <td class="text-white"></td>
+            <td class="text-white"></td>
+            <td class="text-white"></td>
+            <td class="text-white">Total</td>
+            <td class="text-white"><strong>M{{ number_format($total, 2) }}</strong></td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+            <!-- Other sections of the invoice -->
+
+        </div>
+    </section>
+
+    <!-- Bootstrap Bundle JS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
 </body>
+
 </html>
