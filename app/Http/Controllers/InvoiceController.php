@@ -8,6 +8,8 @@ use App\Models\InvoiceItem;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Payment;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\InvoiceEmail;
 
 use PDF; // Import the Options class
 
@@ -16,9 +18,13 @@ class InvoiceController extends Controller
     public function index()
     {
         // Fetch a list of invoices from the database
-        $invoices = Invoice::all(); // You need to import the Invoice model
+        $invoices = Invoice::all();
+        foreach ($invoices as $invoice) {
+            $recipientEmail = $invoice->customer->email; // Access the customer's email associated with each invoice
+            // Now you can use $recipientEmail as needed
+        } // You need to import the Invoice model
     
-        return view('invoices.index', compact('invoices'));
+        return view('invoices.index', compact('invoices', 'recipientEmail'));
     }
     
     public function create()
@@ -52,6 +58,8 @@ class InvoiceController extends Controller
     
         return view('invoices.create', compact('customers', 'products', 'newInvoiceNumber'));
     }
+
+
 
     
     public function store(Request $request)
@@ -179,6 +187,39 @@ public function downloadPdf($id)
     // Download the PDF file
     return $pdf->stream("invoice_{$invoice->invoice_number}.pdf");
 }
+
+public function sendInvoiceEmail($invoiceId, $recipientEmail)
+{
+    // Find the invoice by ID
+    $invoice = Invoice::findOrFail($invoiceId);
+
+    // Generate PDF from Blade template
+    $pdf = PDF::loadView('pdf.invoice', ['invoice' => $invoice]);
+    $pdf->setPaper('A4');
+    
+    // Get the PDF content as a string
+    $pdfContent = $pdf->output();
+
+    // Save the PDF to a temporary location
+    $tempPdfPath = storage_path('app/temp/invoice.pdf');
+    file_put_contents($tempPdfPath, $pdfContent);
+
+    // Send email with attached PDF
+    $mailSent = Mail::to($recipientEmail)->send(new InvoiceEmail($invoice, $tempPdfPath));
+    
+    // Delete the temporary PDF file after sending the email
+    unlink($tempPdfPath);
+
+    if ($mailSent) {
+        // If email was sent successfully, return a success message
+        return redirect()->back()->with('success', 'Invoice email sent successfully!');
+    } else {
+        // If email sending failed, return an error message
+        return redirect()->back()->with('error', 'Failed to send invoice email.');
+    }
+}
+
+
 
 
 

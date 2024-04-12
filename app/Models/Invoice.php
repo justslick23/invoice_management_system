@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use PDF;
 class Invoice extends Model
 {
     use HasFactory;
@@ -22,5 +23,13 @@ class Invoice extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function generatePdf()
+    {
+        // Render the invoice data into a Blade view
+        $pdfContent = PDF::loadView('pdf.invoice', ['invoice' => $this])->output();
+
+        return $pdfContent;
     }
 }

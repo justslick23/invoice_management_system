@@ -1,12 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
-@if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+
+
+
     <h1>List of Invoices</h1>
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
 
     <a href="{{ route('invoice.create') }}" class="btn btn-primary">Create New Invoice</a>
 
@@ -44,6 +54,9 @@
     <a href="{{ route('invoice.download', $invoice->id) }}" class="btn btn-secondary btn-sm">
         <i class="fas fa-download"></i>
     </a>
+    <a href="{{ route('send.invoice.email', ['invoiceId' => $invoice->id, 'recipientEmail' => $recipientEmail]) }}" class="btn btn-primary">
+    Send Invoice Email
+</a>
     <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#recordPaymentModal">
         <i class="fas fa-money-bill"></i> 
     </button>
