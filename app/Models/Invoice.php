@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use PDF;
 class Invoice extends Model
 {
+
+    protected $fillable = ['invoice_number', 'customer_id', 'invoice_date', 'due_date', 'status', 'total'];
+    
     use HasFactory;
 
     public function customer()

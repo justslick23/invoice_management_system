@@ -32,33 +32,29 @@ class InvoiceController extends Controller
         $customers = Customer::all(); // Fetch the list of customers
         $products = Product::all(); // Fetch the list of products
     
-        $lastInvoice = Invoice::latest('id')->first();
-    
         // Get the current year and month
         $yearMonth = date('Ym');
+    
+        // Fetch the last invoice for the current year and month
+        $lastInvoice = Invoice::where('invoice_number', 'like', 'INV-' . $yearMonth . '-%')->latest('id')->first();
     
         // If there is no last invoice, set the sequential number to 1
         $sequentialNumber = 1;
     
         if ($lastInvoice) {
-            // Extract the year and month from the last invoice number
-            $lastYearMonth = substr($lastInvoice->invoice_number, 4, 6);
-    
-            if ($lastYearMonth == $yearMonth) {
-                // If the last invoice is from the same month, increment the sequential number
-                $sequentialNumber = intval(substr($lastInvoice->invoice_number, -5)) + 1;
-            }
+            // Extract the sequential number from the last invoice number
+            $sequentialNumber = intval(substr($lastInvoice->invoice_number, -4)) + 1;
         }
     
-        // Format the sequential number with leading zeros
-        $formattedSequentialNumber = str_pad($sequentialNumber, 4, '0', STR_PAD_LEFT);
-    
-        // Construct the new invoice number
-        $newInvoiceNumber = 'INV-' . $yearMonth . '-' . $formattedSequentialNumber;
+        // Keep generating the invoice number until it's unique
+        $newInvoiceNumber = 'INV-' . $yearMonth . '-' . str_pad($sequentialNumber, 4, '0', STR_PAD_LEFT);
+        while (Invoice::where('invoice_number', $newInvoiceNumber)->exists()) {
+            $sequentialNumber++;
+            $newInvoiceNumber = 'INV-' . $yearMonth . '-' . str_pad($sequentialNumber, 4, '0', STR_PAD_LEFT);
+        }
     
         return view('invoices.create', compact('customers', 'products', 'newInvoiceNumber'));
     }
-
 
 
     
@@ -131,14 +127,22 @@ public function update(Request $request, $id)
 
 public function recordPayment(Request $request, Invoice $invoice)
 {
+    $newinvoice = Invoice::where('id', $request->input('invoice_id'))->first();
+
+
+
     // Validate the payment data
-    $request->validate([
+ /*    $request->validate([
         'amount' => 'required|numeric|min:0',
         'payment_date' => 'required|date',
     ]);
+ */
+
 
     // Calculate the remaining balance
-    $remainingBalance = $invoice->total - $invoice->payments->sum('amount');
+    $remainingBalance = $newinvoice->total - $newinvoice->payments->sum('amount');
+
+
 
     // Check if the payment amount is not more than the remaining balance
     if ($request->input('amount') > $remainingBalance) {
@@ -147,8 +151,9 @@ public function recordPayment(Request $request, Invoice $invoice)
 
     // Create a new payment record
     $payment = new Payment([
-        'amount' => $request->input('amount'),
+        'amount' => $request->input('payment_amount'),
         'payment_date' => $request->input('payment_date'),
+        'invoice_id' => $request->input('invoice_id'),
     ]);
 
     // Associate the payment with the invoice
@@ -158,7 +163,7 @@ public function recordPayment(Request $request, Invoice $invoice)
     $totalPaidAmount = $invoice->payments->sum('amount');
 
     // Update the invoice status based on the payment amount
-    if ($totalPaidAmount >= $invoice->total) {
+    if ($totalPaidAmount = $invoice->total) {
         $invoice->update(['status' => 'Paid']);
     } else {
         $invoice->update(['status' => 'Partially Paid']);
